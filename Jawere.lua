@@ -901,7 +901,8 @@ function Tab:AddColorPicker(name, default, callback)
 		panel.Visible = panelOpen
 	end)
 
-	self._scroll:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+	local scrollRef = self._scroll
+	scrollRef:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
 		if panelOpen then
 			panelOpen = false
 			panel.Visible = false
