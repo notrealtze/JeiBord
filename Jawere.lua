@@ -776,13 +776,13 @@ function Tab:AddColorPicker(name, default, callback)
 	pvs.Color = Color3.fromRGB(90, 90, 90)
 	pvs.Thickness = 1
 
-	local panel = Instance.new("Frame", row)
+	local panel = Instance.new("Frame", self._main)
 	panel.BorderSizePixel = 0
 	panel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 	panel.AnchorPoint = Vector2.new(1, 0)
-	panel.Size = UDim2.new(0.55, 0, 0, 130)
-	panel.Position = UDim2.new(1, 0, 1, 4)
-	panel.ZIndex = 50
+	panel.Size = UDim2.new(0, 0, 0, 130)
+	panel.Position = UDim2.new(0, 0, 0, 0)
+	panel.ZIndex = 200
 	panel.Visible = false
 	local panC = Instance.new("UICorner", panel)
 	panC.CornerRadius = UDim.new(0, 4)
@@ -887,8 +887,17 @@ function Tab:AddColorPicker(name, default, callback)
 		updateColor()
 	end
 
+	local function updatePanelPosition()
+		local abs = preview.AbsolutePosition
+		local sz = preview.AbsoluteSize
+		local mainAbs = self._main.AbsolutePosition
+		panel.Size = UDim2.new(0, sz.X, 0, 130)
+		panel.Position = UDim2.new(0, abs.X + sz.X - mainAbs.X, 0, abs.Y + sz.Y - mainAbs.Y + 4)
+	end
+
 	preview.Activated:Connect(function()
 		panelOpen = not panelOpen
+		if panelOpen then updatePanelPosition() end
 		panel.Visible = panelOpen
 	end)
 
