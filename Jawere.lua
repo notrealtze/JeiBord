@@ -901,6 +901,13 @@ function Tab:AddColorPicker(name, default, callback)
 		panel.Visible = panelOpen
 	end)
 
+	self._scroll:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+		if panelOpen then
+			panelOpen = false
+			panel.Visible = false
+		end
+	end)
+
 	hueBG.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			draggingHue = true
