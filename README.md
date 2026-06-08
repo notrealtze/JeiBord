@@ -148,8 +148,8 @@ local Jawere = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrea
 
 local Window = Jawere.new({
 	Name = "my hub",
-	Width = 700,
-	Height = 400,
+	Width = 500,
+	Height = 320,
 })
 
 local Main = Window:AddTab("Main", "rbxassetid://12499751184")
