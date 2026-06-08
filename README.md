@@ -144,23 +144,61 @@ ping:SetValue("32ms")
 ```lua
 local Jawere = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
 
-local Window = Jawere.new({ Name = "my hub", Width = 0.5, Height = 0.6 })
+local Window = Jawere.new({
+	Name = "my hub",
+	Width = 700,
+	Height = 400,
+})
 
 local Main = Window:AddTab("Main", "rbxassetid://12499751184")
+local Combat = Window:AddTab("Combat", "rbxassetid://12499751184")
 
 Main:AddSection("player")
 
 Main:AddButton("print hello", function()
-    print("hi")
+	print("hi")
 end)
 
-Main:AddToggle("god mode", false, function(state)
-    print("god mode:", state)
+local god = Main:AddToggle("god mode", false, function(state)
+	print("god mode:", state)
 end)
 
 Main:AddSlider("speed", 0, 100, 16, function(val)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
+	game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
+end)
+
+Main:AddTextbox("name", "type here...", function(val)
+	print("submitted:", val)
+end)
+
+Main:AddDropdown("team", {"Red", "Blue", "Green"}, function(val)
+	print("team:", val)
+end)
+
+Main:AddMultiDropdown("parts", {"Head", "Torso", "HumanoidRootPart"}, function(selected)
+	print("parts:", table.concat(selected, ", "))
+end)
+
+Main:AddColorPicker("color", Color3.fromRGB(255, 80, 80), function(color)
+	print("color:", color)
 end)
 
 local ping = Main:AddLabel("ping", "0ms")
+
+task.spawn(function()
+	while task.wait(1) do
+		ping:SetValue(math.random(10, 120) .. "ms")
+	end
+end)
+
+Combat:AddSection("aimbot")
+
+Combat:AddToggle("silent aim", false, function(state)
+	print("silent aim:", state)
+end)
+
+Combat:AddSlider("fov", 0, 360, 90, function(val)
+	print("fov:", val)
+end)
+
 ```
