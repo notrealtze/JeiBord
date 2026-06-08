@@ -96,6 +96,10 @@ local function wireDropdown(selected, list, main, scrollFrame, options, callback
 		if open then setOpen(false) end
 	end)
 
+	local function forceClose()
+		if open then setOpen(false) end
+	end
+
 	for i, optText in ipairs(options) do
 		if multi then
 			local row = Instance.new("Frame", list)
@@ -189,6 +193,7 @@ local function wireDropdown(selected, list, main, scrollFrame, options, callback
 			end)
 		end
 	end
+	return forceClose
 end
 
 local Window = {}
@@ -425,6 +430,7 @@ function Window:AddTab(name, icon)
 		_elemHolder = self._elemHolder,
 		_window = self,
 		_order = 0,
+		_closers = {},
 	}, Tab)
 
 	table.insert(self._tabs, tab)
@@ -445,6 +451,7 @@ function Window:_selectTab(tab)
 		t._frame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
 		t._tabName.TextColor3 = Color3.fromRGB(180, 180, 180)
 		t._scroll.Visible = false
+		for _, close in ipairs(t._closers) do close() end
 	end
 	tab._frame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 	tab._tabName.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -639,7 +646,8 @@ function Tab:AddDropdown(name, options, callback)
 	ss.Thickness = 1
 
 	local list = makeDropdownList(self._main)
-	wireDropdown(selected, list, self._main, self._scroll, options, callback, false)
+	local closer = wireDropdown(selected, list, self._main, self._scroll, options, callback, false)
+	table.insert(self._closers, closer)
 end
 
 function Tab:AddMultiDropdown(name, options, callback)
@@ -668,7 +676,8 @@ function Tab:AddMultiDropdown(name, options, callback)
 	ss.Thickness = 1
 
 	local list = makeDropdownList(self._main)
-	wireDropdown(selected, list, self._main, self._scroll, options, callback, true)
+	local closer = wireDropdown(selected, list, self._main, self._scroll, options, callback, true)
+	table.insert(self._closers, closer)
 end
 
 function Tab:AddSlider(name, min, max, default, callback)
@@ -903,6 +912,13 @@ function Tab:AddColorPicker(name, default, callback)
 
 	local scrollRef = self._scroll
 	scrollRef:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+		if panelOpen then
+			panelOpen = false
+			panel.Visible = false
+		end
+	end)
+
+	table.insert(self._closers, function()
 		if panelOpen then
 			panelOpen = false
 			panel.Visible = false
