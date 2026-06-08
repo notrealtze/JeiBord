@@ -23,16 +23,18 @@ local Jawere = require(path.to.Jawere)
 ```lua
 local Window = Jawere.new({
     Name = "my hub",
-    Width = 0.5,
-    Height = 0.6,
+    Width = 700,
+    Height = 400,
 })
 ```
 
 | key | default | what it does |
 |---|---|---|
 | Name | "Jawere" | title in the top bar |
-| Width | 0.4726 | scale width |
-| Height | 0.56944 | scale height |
+| Width | 700 | pixel width |
+| Height | 400 | pixel height |
+
+draggable by default, just grab the topbar
 
 ```lua
 Window:SetTitle("new name")
@@ -200,5 +202,4 @@ end)
 Combat:AddSlider("fov", 0, 360, 90, function(val)
 	print("fov:", val)
 end)
-
 ```
