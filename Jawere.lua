@@ -65,7 +65,7 @@ local function makeDropdownList(main)
 	return list
 end
 
-local function wireDropdown(selected, list, main, scrollFrame, options, callback, multi)
+local function wireDropdown(selected, list, main, scrollFrame, options, callback, multi, win)
 	local open = false
 	local itemHeight = 24
 	local padding = 8
@@ -82,6 +82,16 @@ local function wireDropdown(selected, list, main, scrollFrame, options, callback
 
 	local function setOpen(state)
 		open = state
+		if state then
+			win:_registerPopup(function()
+				open = false
+				list.Visible = true
+				ts:Create(list, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, selected.AbsoluteSize.X, 0, 0)
+				}):Play()
+				task.delay(0.2, function() list.Visible = false end)
+			end)
+		end
 		updateListPosition()
 		list.Visible = true
 		local targetH = state and (itemCount * itemHeight + (itemCount - 1) * 2 + padding * 2) or 0
@@ -91,14 +101,16 @@ local function wireDropdown(selected, list, main, scrollFrame, options, callback
 		if not state then task.delay(0.2, function() list.Visible = false end) end
 	end
 
-	selected.Activated:Connect(function() setOpen(not open) end)
-	scrollFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-		if open then setOpen(false) end
+	selected.Activated:Connect(function()
+		if open then
+			win:_closePopup()
+		else
+			setOpen(true)
+		end
 	end)
-
-	local function forceClose()
-		if open then setOpen(false) end
-	end
+	scrollFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+		if open then win:_closePopup() end
+	end)
 
 	for i, optText in ipairs(options) do
 		if multi then
@@ -193,7 +205,6 @@ local function wireDropdown(selected, list, main, scrollFrame, options, callback
 			end)
 		end
 	end
-	return forceClose
 end
 
 local Window = {}
@@ -451,12 +462,24 @@ function Window:_selectTab(tab)
 		t._frame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
 		t._tabName.TextColor3 = Color3.fromRGB(180, 180, 180)
 		t._scroll.Visible = false
-		for _, close in ipairs(t._closers) do close() end
 	end
 	tab._frame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 	tab._tabName.TextColor3 = Color3.fromRGB(255, 255, 255)
 	tab._scroll.Visible = true
 	self._activeTab = tab
+	self:_closePopup()
+end
+
+function Window:_registerPopup(closeFn)
+	self:_closePopup()
+	self._activePopup = closeFn
+end
+
+function Window:_closePopup()
+	if self._activePopup then
+		self._activePopup()
+		self._activePopup = nil
+	end
 end
 
 function Tab:AddButton(name, callback)
@@ -646,8 +669,7 @@ function Tab:AddDropdown(name, options, callback)
 	ss.Thickness = 1
 
 	local list = makeDropdownList(self._main)
-	local closer = wireDropdown(selected, list, self._main, self._scroll, options, callback, false)
-	table.insert(self._closers, closer)
+	wireDropdown(selected, list, self._main, self._scroll, options, callback, false, self._window)
 end
 
 function Tab:AddMultiDropdown(name, options, callback)
@@ -676,8 +698,7 @@ function Tab:AddMultiDropdown(name, options, callback)
 	ss.Thickness = 1
 
 	local list = makeDropdownList(self._main)
-	local closer = wireDropdown(selected, list, self._main, self._scroll, options, callback, true)
-	table.insert(self._closers, closer)
+	wireDropdown(selected, list, self._main, self._scroll, options, callback, true, self._window)
 end
 
 function Tab:AddSlider(name, min, max, default, callback)
@@ -896,6 +917,7 @@ function Tab:AddColorPicker(name, default, callback)
 		updateColor()
 	end
 
+	local win = self._window
 	local function updatePanelPosition()
 		local abs = preview.AbsolutePosition
 		local sz = preview.AbsoluteSize
@@ -905,24 +927,22 @@ function Tab:AddColorPicker(name, default, callback)
 	end
 
 	preview.Activated:Connect(function()
-		panelOpen = not panelOpen
-		if panelOpen then updatePanelPosition() end
-		panel.Visible = panelOpen
+		if panelOpen then
+			win:_closePopup()
+		else
+			win:_registerPopup(function()
+				panelOpen = false
+				panel.Visible = false
+			end)
+			panelOpen = true
+			updatePanelPosition()
+			panel.Visible = true
+		end
 	end)
 
 	local scrollRef = self._scroll
 	scrollRef:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-		if panelOpen then
-			panelOpen = false
-			panel.Visible = false
-		end
-	end)
-
-	table.insert(self._closers, function()
-		if panelOpen then
-			panelOpen = false
-			panel.Visible = false
-		end
+		if panelOpen then win:_closePopup() end
 	end)
 
 	hueBG.InputBegan:Connect(function(input)
