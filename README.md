@@ -23,16 +23,16 @@ local Jawere = require(path.to.Jawere)
 ```lua
 local Window = Jawere.new({
     Name = "my hub",
-    Width = 700,
-    Height = 400,
+    Width = 500,
+    Height = 320,
 })
 ```
 
 | key | default | what it does |
 |---|---|---|
 | Name | "Jawere" | title in the top bar |
-| Width | 700 | pixel width |
-| Height | 400 | pixel height |
+| Width | 500 | pixel width |
+| Height | 320 | pixel height |
 
 draggable by default, just grab the topbar
 
