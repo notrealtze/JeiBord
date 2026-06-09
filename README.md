@@ -8,7 +8,7 @@ ui library i made, has tabs buttons toggles sliders dropdowns color pickers etc
 
 external link:
 ```lua
-local JeiBord = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
+local JeiBord = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/JeiBord/refs/heads/main/JeiBord"))()
 ```
 
 local:
@@ -144,7 +144,7 @@ ping:SetValue("32ms")
 ## full example
 
 ```lua
-local JeiBord = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
+local JeiBord = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/JeiBord/refs/heads/main/JeiBord"))()
 
 local Window = JeiBord.new({
 	Name = "my hub",
