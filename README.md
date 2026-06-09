@@ -1,4 +1,4 @@
-# Jawere
+# JeiBord
 
 ui library i made, has tabs buttons toggles sliders dropdowns color pickers etc
 
@@ -8,12 +8,12 @@ ui library i made, has tabs buttons toggles sliders dropdowns color pickers etc
 
 external link:
 ```lua
-local Jawere = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
+local JeiBord = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
 ```
 
 local:
 ```lua
-local Jawere = require(path.to.Jawere)
+local JeiBord = require(path.to.JeiBord)
 ```
 
 ---
@@ -21,7 +21,7 @@ local Jawere = require(path.to.Jawere)
 ## window
 
 ```lua
-local Window = Jawere.new({
+local Window = JeiBord.new({
     Name = "my hub",
     Width = 500,
     Height = 320,
@@ -30,7 +30,7 @@ local Window = Jawere.new({
 
 | key | default | what it does |
 |---|---|---|
-| Name | "Jawere" | title in the top bar |
+| Name | "JeiBord" | title in the top bar |
 | Width | 500 | pixel width |
 | Height | 320 | pixel height |
 
@@ -144,9 +144,9 @@ ping:SetValue("32ms")
 ## full example
 
 ```lua
-local Jawere = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
+local JeiBord = loadstring(game:HttpGet("https://raw.githubusercontent.com/notrealtze/Custom-Hun/refs/heads/main/Jawere.lua"))()
 
-local Window = Jawere.new({
+local Window = JeiBord.new({
 	Name = "my hub",
 	Width = 500,
 	Height = 320,
